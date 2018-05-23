@@ -26,6 +26,7 @@ def create_app(test_config=None):
 	except OSError:
 		pass
 
+	app.config['DEBUG_TB_PROFILER_ENABLED'] = True # enabling profiler
 	toolbar = DebugToolbarExtension(app)
 
 	# a simple page that says hello
