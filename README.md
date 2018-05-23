@@ -5,9 +5,10 @@ Based on:
 http://flask.pocoo.org/docs/1.0/tutorial/
 ```
 
-To run, cd to project directory and type in the terminal:
+To initialize database and run the application, cd to cloned project directory and enter in the terminal:
 ```
-export FLASK_APP=code-xample
+export FLASK_APP=xample
 export FLASK_ENV=development
+flask init-db
 flask run
 ```
