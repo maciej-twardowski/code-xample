@@ -30,10 +30,11 @@ def close_db(e=None):
 def init_db():
 	db = get_db()
 
-	# with current_app.open_resource('schema.sql') as f:
-	with current_app.open_resource('schema.sql') as f:
-		db.executescript(f.read().decode('utf8')) # 
-		db.commit()
+	with current_app.open_resource('schema.sql') as schema_file:
+		db.executescript(schema_file.read().decode('utf8'))
+
+	with current_app.open_resource('initial_inserts.sql') as inserts_file:
+		db.executescript(inserts_file.read().decode('utf8'))
 
 
 @click.command('init-db')

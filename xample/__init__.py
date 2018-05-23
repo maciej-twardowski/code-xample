@@ -2,6 +2,7 @@ import os
 
 
 from flask import Flask
+from flask_debugtoolbar import DebugToolbarExtension
 
 
 def create_app(test_config=None):
@@ -25,6 +26,8 @@ def create_app(test_config=None):
 	except OSError:
 		pass
 
+	toolbar = DebugToolbarExtension(app)
+
 	# a simple page that says hello
 	@app.route('/hello')
 	def hello():
@@ -35,5 +38,9 @@ def create_app(test_config=None):
 
 	from . import auth
 	app.register_blueprint(auth.bp)
+
+	from . import posts
+	app.register_blueprint(posts.bp)
+	app.add_url_rule('/', endpoint='index')
 
 	return app
