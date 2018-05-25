@@ -10,26 +10,34 @@ CREATE TABLE user (
 );
 
 CREATE TABLE technology (
- id INTEGER PRIMARY KEY AUTOINCREMENT,
- name TEXT UNIQUE NOT NULL
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	name TEXT UNIQUE NOT NULL
 );
 
 CREATE TABLE difficulty (
- id INTEGER PRIMARY KEY AUTOINCREMENT,
- name TEXT UNIQUE NOT NULL
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	name TEXT UNIQUE NOT NULL
 );
 
 CREATE TABLE post (
- id INTEGER PRIMARY KEY AUTOINCREMENT,
- author_id INTEGER NOT NULL,
- created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
- title TEXT NOT NULL,
- body TEXT NULL,
- link TEXT NOT NULL,
- technology INTEGER NOT NULL,
- difficulty INTEGER NOT NULL,
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	likes INTEGER NOT NULL DEFAULT 0,
+	author_id INTEGER NOT NULL,
+	title TEXT NOT NULL,
+	body TEXT NULL,
+	link TEXT NOT NULL,
+	technology INTEGER NOT NULL,
+	difficulty INTEGER NOT NULL,
+	-- filled asynchronously
+	link_accessible BOOLEAN NULL,
+	project_name TEXT NULL,
+	project_author TEXT NULL,
 
- FOREIGN KEY (author_id) REFERENCES user (id),
- FOREIGN KEY (technology) REFERENCES technology (id),
- FOREIGN KEY (difficulty) REFERENCES technology (id)
+	CHECK(length("title") <= 100),
+	CHECK (link_accessible IN (NULL, 0, 1)),
+
+	FOREIGN KEY (author_id) REFERENCES user (id),
+	FOREIGN KEY (technology) REFERENCES technology (id),
+	FOREIGN KEY (difficulty) REFERENCES technology (id)
 );

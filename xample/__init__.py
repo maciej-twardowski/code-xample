@@ -29,11 +29,6 @@ def create_app(test_config=None):
 	app.config['DEBUG_TB_PROFILER_ENABLED'] = True # enabling profiler
 	toolbar = DebugToolbarExtension(app)
 
-	# a simple page that says hello
-	@app.route('/hello')
-	def hello():
-		return 'Hello, World!'
-
 	from . import db
 	db.init_app(app)
 

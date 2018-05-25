@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block content %}
-	<form method="GET" action="{{ url_for('posts.display') }}">
+	<form method="GET" action="{{ url_for('posts.display_posts') }}">
 	    {{ form.csrf_token }}
 	    {{ form.tech.label }}
 	    {{ form.tech }}
