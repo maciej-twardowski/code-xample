@@ -2,13 +2,10 @@
 
 Based on:
 ```
-http://flask.pocoo.org/docs/1.0/tutorial/
+https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world
 ```
 
 To initialize database and run the application, cd to cloned project directory and enter in the terminal:
 ```
-export FLASK_APP=xample
-export FLASK_ENV=development
-flask init-db
-flask run
+FLASK_APP=xample FLASK_ENV=development flask run
 ```

@@ -2,17 +2,12 @@ from flask import (
 	Blueprint, flash, g, redirect, render_template, request, url_for
 )
 from werkzeug.exceptions import abort
-from xample.auth import login_required
-from xample.db import get_db
 from flask_wtf import FlaskForm
 from wtforms import SelectField, SubmitField
 from wtforms.validators import DataRequired, Optional
-
-
-class LinksToDisplayForm(FlaskForm):
-	tech = SelectField('Technology', validators=[], coerce=str) # Optional()
-	diff = SelectField('Difficulty', validators=[], coerce=str)
-	submit = SubmitField('Display links')
+from xample.forms import LinksToDisplayForm
+from flask_login import login_required
+from xample.models import User, Technology, Difficulty, Post
 
 
 bp = Blueprint('posts', __name__)
@@ -20,25 +15,16 @@ bp = Blueprint('posts', __name__)
 
 @bp.route('/')
 def index():
-	db = get_db()
-
-	technologies = db.execute(
-		'SELECT id, name'
-		' FROM technology'
-		' ORDER BY name '
-	).fetchall()
-
-	difficulties = db.execute(
-		'SELECT id, name'
-		' FROM difficulty'
-		' ORDER BY id'
-	).fetchall()
+	technologies = Technology.query.all()
+	tech_options = [(tech.id, tech.name) for tech in technologies]
+	difficulties = Difficulty.query.all()
+	diff_options = [(diff.id, diff.name) for diff in difficulties]
 
 	form = LinksToDisplayForm(csrf_enabled=False)
-	form.tech.choices = [('', '')] + technologies
-	form.diff.choices = [('', '')] + difficulties
+	form.tech.choices = [('', '')] + tech_options
+	form.diff.choices = [('', '')] + diff_options
 
-	return render_template('posts/index.html', form=form)
+	return render_template('posts/index.html', form=form) # 
 
 
 @bp.route('/add_link', methods=['POST'])
@@ -47,39 +33,32 @@ def add_link():
 	return 'TODO'
 
 
+def alchemy_object_to_dict(obj):
+	return dict((col, getattr(obj, col)) for col in obj.__table__.columns.keys())
+
+
 @bp.route('/display/')
 def display_posts():
 	tech = request.args.get('tech')
 	diff = request.args.get('diff')
-	tech = None if tech == '' else tech
-	diff = None if diff == '' else diff
 
-	db = get_db()
-	posts_headers = db.execute(
-		'SELECT id, title, likes'
-		' FROM post p '
-		' WHERE (technology = ?1 OR ?1 ISNULL) AND' 
-		'  (difficulty = ?2 OR ?2 ISNULL)'
-		' ORDER BY likes desc', (tech, diff)
-	).fetchall()
-	# return 'tech:{}, diff:{}'.format(tech, diff)
-	return render_template('posts/display.html', posts_headers=posts_headers)
-
-
-def get_post(id):
-    post = get_db().execute(
-        'SELECT *'
-        ' FROM post p'
-        ' WHERE id = ?', (id,)
-    ).fetchone()
-
-    if post is None:
-        abort(404, "Post id {0} doesn't exist.".format(id))
-
-    return post
+	filtered_posts = (
+		Post.query
+		.filter((Post.technology == tech) | (tech == ''))
+		.filter((Post.difficulty == diff) | (diff == ''))
+		.all()
+	)
+	post_dicts = [alchemy_object_to_dict(post) for post in filtered_posts]
+	# TODO send only necessary data, display in pretty form
+	return render_template('posts/display.html', post_dicts=post_dicts)
 
 
 @bp.route('/display/<int:post_id>')
 def display_post(post_id):
-	post = get_post(post_id)
-	return str([str(col) for col in post])
+	post = Post.query.get(post_id)
+
+	if post is None:
+		abort(404, "Post id {0} doesn't exist.".format(post_id))
+	# TODO display in pretty form
+	# TODO allow users to like posts
+	return str(alchemy_object_to_dict(post))
