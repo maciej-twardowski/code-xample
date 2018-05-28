@@ -10,14 +10,22 @@ https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world
 ```
 ## Running the app
 
-To run the application, install required python packages (listed in requirements.txt), cd to cloned project directory and enter in the terminal:
+To run the application in dev mode: cd to cloned project directory, inside virtual env install required python packages (pip install -r requirements.txt) and enter in the terminal:
 ```
-FLASK_APP=xample flask run
+FLASK_APP=xample FLASK_ENV=development flask run
 ```
+
+Alternatively build and run the docker container. Inside the cloned project directory:
+```
+docker build -t xample:latest .
+docker run --name xample -d -p 5000:5000 --rm xample:latest
+```
+
+You can access the application at http://localhost:5000.
 
 ## Todo
 
-* Add features: validating links, 'liking', asynchronously parsing information from the links destinations 
-* Add minimalistic CSS
 * Split into microservices
+* Add features: adding links, validating links, 'liking', asynchronously parsing information from the links destinations 
+* Add minimalistic CSS
 * Dockerize

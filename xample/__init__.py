@@ -11,17 +11,11 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
 app.config.from_mapping(
 	SECRET_KEY='dev',
-	# DATABASE=os.path.join(app.instance_path, 'xample.sqlite'),
 	# DEBUG_TB_PROFILER_ENABLED=True,
 	# todo change location of db
 	SQLALCHEMY_DATABASE_URI='sqlite:///' + os.path.join(basedir, 'alchemy_xample.db'),
 	SQLALCHEMY_TRACK_MODIFICATIONS=False
 )
-
-try:
-	os.makedirs(app.instance_path)
-except OSError:
-	pass
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
