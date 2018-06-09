@@ -21,7 +21,7 @@ docker build -t xample:latest .
 docker run --name xample -d -p 5000:5000 --rm xample:latest
 ```
 
-You can access the application at http://localhost:5000.
+You can access the application at http://localhost:5000 .
 
 ## Todo
 
