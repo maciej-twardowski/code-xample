@@ -23,6 +23,16 @@ docker run --name xample -d -p 5000:5000 --rm xample:latest
 
 You can access the application at http://localhost:5000 .
 
+## Users Microservice API ( http://localhost:5001 )
+
+| Method  | Route | Arguments | Description |
+| :---: | :---: | :---: | :---: |
+| GET | / | - | API information |
+| GET | /users | - | users information |
+| GET | /user/id | - | user information |
+| POST | /user | username, password | create new user |
+| POST | /auth/login | username, password | verify login and password |
+
 ## Todo
 
 * Split into microservices
