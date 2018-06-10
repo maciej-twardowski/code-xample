@@ -33,9 +33,33 @@ You can access the application at http://localhost:5000 .
 | POST | /user | username, password | create new user |
 | POST | /auth/login | username, password | verify login and password |
 
+            'GET  | /posts | technology, difficulty',
+            'GET  | /post/id | ---',
+            'GET  | /technologies | ---',
+            'GET  | /technology/id | ---',
+            'GET  | /difficulties | ---',
+            'GET  | /difficulty/id | ---',
+            'POST | /post  | author_id, title, body, link, technology, difficulty',
+            'POST | /post/id/like | ---',
+
+## Posts Microservice API ( http://localhost:5002 )
+
+| Method  | Route | Arguments | Description |
+| :---: | :---: | :---: | :---: |
+| GET | / | - | API information |
+| GET | /posts | technology, difficulty | posts information |
+| GET | /post/id | - | post information |
+| GET | /technologies | - | technologies information |
+| GET | /technology/id | - | technology information |
+| GET | /difficulties | - | difficulties information |
+| GET | /difficulty/id | - | difficulty information |
+| POST | /post | author_id, title, body, link, technology, difficulty | create new post |
+| POST | /post/id/like | - | like existing post |
+
 ## Todo
 
 * Split into microservices
+* Posts microservice: Add list of users ids who liked the post to prevent from like abuse, think about better URL validation
 * Add features: adding links, validating links, 'liking', asynchronously parsing information from the links destinations 
 * Add minimalistic CSS
 * Dockerize
