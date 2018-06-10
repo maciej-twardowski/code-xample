@@ -33,15 +33,6 @@ You can access the application at http://localhost:5000 .
 | POST | /user | username, password | create new user |
 | POST | /auth/login | username, password | verify login and password |
 
-            'GET  | /posts | technology, difficulty',
-            'GET  | /post/id | ---',
-            'GET  | /technologies | ---',
-            'GET  | /technology/id | ---',
-            'GET  | /difficulties | ---',
-            'GET  | /difficulty/id | ---',
-            'POST | /post  | author_id, title, body, link, technology, difficulty',
-            'POST | /post/id/like | ---',
-
 ## Posts Microservice API ( http://localhost:5002 )
 
 | Method  | Route | Arguments | Description |
