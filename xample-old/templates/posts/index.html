@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block header %}
+	<h1>{% block title %}Links{% endblock %}</h1>
+	{% if g.user %}
+		<a class="action" href="{{ url_for('posts.add_link') }}">New</a>
+	{% endif %}
+{% endblock %}
+
+{% block content %}
+	<form method="GET" action="{{ url_for('posts.display_posts') }}">
+	    {{ form.tech.label }}
+	    {{ form.tech }}
+	    {{ form.diff.label }}
+	    {{ form.diff }}
+	    {{ form.submit }}
+	</form>
+{% endblock %}

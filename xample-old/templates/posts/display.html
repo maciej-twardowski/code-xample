@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block header %}
+	<h1>{% block title %}Displaying Links{% endblock %}</h1>
+	{% if g.user %}
+		<a class="action" href="{{ url_for('blog.create') }}">New</a>
+	{% endif %}
+{% endblock %}
+
+{% block content %}
+	<article class="posts">
+		<ol>
+			{% for post in post_dicts %}
+				<li>
+					<a href="{{ url_for('posts.display_post', post_id=post['id']) }}">{{ post['title'] }} {{ post['likes'] }}</a>
+				</li>
+			{% endfor %}
+		</ol>
+	</article>
+{% endblock %}

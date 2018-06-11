@@ -1,11 +1,12 @@
 #!flask/bin/python
 # Based on https://blog.miguelgrinberg.com/post/restful-authentication-with-flask
 import os
-from flask import Flask, abort, request, jsonify, url_for
+from flask import Flask, request, jsonify, url_for
 from flask_sqlalchemy import SQLAlchemy
 from passlib.apps import custom_app_context as pwd_context
+from http import HTTPStatus
+from werkzeug.exceptions import BadRequest, NotFound, Conflict
 
-# initialization
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yet another very secret key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users_db.sqlite'
@@ -15,98 +16,100 @@ db = SQLAlchemy(app)
 
 
 class User(db.Model):
-	__tablename__ = 'users'
-	id = db.Column(db.Integer, primary_key=True)
-	username = db.Column(db.String(64), index=True, unique=True, nullable=False)
-	password_hash = db.Column(db.String(128))
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), index=True, unique=True, nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False)
 
-	def hash_password(self, password):
-		# SHA256-Crypt password hash
-		self.password_hash = pwd_context.encrypt(password)
+    def __init__(self, username, password):
+        self.username = username
+        self.password_hash = pwd_context.encrypt(password)
 
-	def verify_password(self, password):
-		return pwd_context.verify(password, self.password_hash)
+    def verify_password(self, password):
+        return pwd_context.verify(password, self.password_hash)
 
 
 @app.route('/', methods=['GET'])
 def api_info():
-	return jsonify(
-		api_requests=[
-			'(method | route | arguments)',
-			'POST | /user | username, password',
-			'GET  | /user/id | --- ',
-			'POST | /auth/login | username, password'
-		]
-	)
+    return jsonify(
+        api_description_columns='<method>  | <route> | <arguments>',
+        api_description=[
+            'POST   | /user                   | username, password',
+            'GET    | /user/<username>        | --- ',
+            'GET    | /users                  | --- ',
+            'POST   | /user/<username>/verify | password'
+        ]
+    )
 
 
 @app.route('/user', methods=['POST'])
 def new_user():
-	username = request.json.get('username')
-	password = request.json.get('password')
-	if username is None or password is None:
-		abort(400)    # missing arguments
+    username = request.form['username']
+    password = request.form['password']
+    if username is None or password is None:
+        return BadRequest('Missing arguments. Required: <username>, <password>.')
 
-	if User.query.filter_by(username=username).first() is not None:
-		return jsonify(succeded=False, error='Username already used.'), 400
+    if User.query.filter_by(username=username).first() is not None:
+        return Conflict('User already exists.')
 
-	user = User(username=username)
-	user.hash_password(password)
-	db.session.add(user)
-	db.session.commit()
-	return jsonify(succeded=True, id=user.id, username=user.username), 201, 
-	{'Location': url_for('get_user', id=user.id, _external=True)}
+    user = User(username=username, password=password)
+    db.session.add(user)
+    db.session.commit()
+    return (
+        jsonify(succeded=True, id=user.id, username=user.username),
+        HTTPStatus.CREATED.value,
+        {'Location': url_for('get_user', username=user.username, _external=True)}
+    )
 
 
-@app.route('/user/<int:id>', methods=['GET'])
-def get_user(id):
-	user = User.query.get(id)
-	if not user:
-		jsonify(succeded=False, error='User not registered.')
+@app.route('/user/<string:username>', methods=['GET'])
+def get_user(username):
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        raise NotFound()
 
-	return jsonify(succeded=True, id=user.id, username=user.username)
+    return jsonify(id=user.id, username=user.username)
 
 
 @app.route('/users', methods=['GET'])
 def get_users():
-	users_info = [{'id': user.id, 'username': user.username} for user in User.query.all()]
-	return jsonify(users_info)
+    users_info = [{'id': user.id, 'username': user.username} for user in User.query.all()]
+    return jsonify(users_info)
 
 
-@app.route('/auth/login', methods=['POST'])
-def login():
-	username = request.json.get('username')
-	password = request.json.get('password')
-	if username is None or password is None:
-		abort(400)    # missing arguments
-	if User.query.filter_by(username=username).first() is None:
-		return jsonify(succeded=False)
-	else:
-		return jsonify({'result': True})
+@app.route('/user/<string:username>/verify', methods=['POST'])
+def verify(username):
+    password = request.form['password']
+    if password is None:
+        return BadRequest('Missing password argument')
+
+    user = User.query.filter_by(username=username).first()
+    if user is None:
+        return NotFound('Non existent user cannot be verified.'),
+
+    return jsonify(valid=user.verify_password(password))
 
 
 def init_db():
-	if not os.path.exists('users_db.sqlite'):
-		db.create_all()
+    if not os.path.exists('users_db.sqlite'):
+        db.create_all()
 
-	if User.query.count() == 0:
-		initial_users = [
-			User(username='admin'),
-			User(username='test')
-		]
+    if User.query.count() == 0:
+        initial_users = [
+            User(username='admin', password='admin'),
+            User(username='test', password='test')
+        ]
 
-		
-		for u in initial_users:
-			u.hash_password(u.username)
-			db.session.add(u)
+        for u in initial_users:
+            db.session.add(u)
 
-		try:
-		    db.session.commit()
-		except:
-		    db.session.rollback()
-		    raise
+        try:
+            db.session.commit()
+        except:
+            db.session.rollback()
+            raise
 
 
 if __name__ == '__main__':
-	init_db()
-	app.run(port=5001, debug=True)
+    init_db()
+    app.run(port=5001, debug=True)

@@ -7,7 +7,7 @@ from wtforms import SelectField, SubmitField
 from wtforms.validators import DataRequired, Optional
 from xample.forms import LinksToDisplayForm
 from flask_login import login_required
-from xample.models import Technology, Difficulty, Post
+from xample.user import User, Technology, Difficulty, Post
 
 bp = Blueprint('posts', __name__)
 

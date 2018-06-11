@@ -1,10 +1,9 @@
 import os
-import sys
 from flask import Flask
 from flask_debugtoolbar import DebugToolbarExtension
-from flask_login import LoginManager
-from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+from flask_login import LoginManager
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -20,8 +19,7 @@ app.config.from_mapping(
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
-
-login_manager = LoginManager()
+login_manager = LoginManager(app)
 login_manager.init_app(app)
 # login_manager.login_view = 'auth.login'
 toolbar = DebugToolbarExtension(app)
@@ -29,6 +27,12 @@ toolbar = DebugToolbarExtension(app)
 from . import models
 
 models.init_db()  # add initial users, techs, difficulties and posts
+
+
+@login_manager.user_loader
+def load_user(id):
+    return models.User.query.get(int(id))
+
 
 from . import auth
 
