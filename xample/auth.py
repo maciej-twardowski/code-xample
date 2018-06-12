@@ -1,12 +1,10 @@
 import requests
-import sys
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
+    Blueprint, flash, redirect, render_template, request, url_for
 )
 from flask_login import current_user, login_user, logout_user, UserMixin
 from werkzeug.urls import url_parse
 from xample.forms import LoginForm, RegistrationForm
-from xample import login_manager
 from http import HTTPStatus
 
 
@@ -50,17 +48,6 @@ class User(UserMixin):
 
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
-
-
-# @login_manager.user_loader
-# def load_user(username):
-#     u = User(username)
-#     return u if u.is_registered() else None
-    # try:
-    #     return u if u.is_registered() else None
-    # except requests.exceptions.ConnectionError:
-    #     print("load_user: Users service is unavailable.", file=sys.stderr)
-    #     return None
 
 
 @bp.route('/register', methods=('GET', 'POST'))

@@ -1,5 +1,4 @@
 import json
-
 import pika
 import urllib.request
 
@@ -32,6 +31,7 @@ def validate_url(ch, method, properties, body):
 
     urllib.request.urlopen(request)
     print(f'Post status updated.')
+
 
 if __name__ == '__main__':
     print("Validator worker started. Waiting for tasks to do...")

@@ -8,8 +8,8 @@ app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 db = SQLAlchemy(app)
-db.init_app(app)
 
 from users_microservice import users
 
+db.init_app(app)
 users.init_db()

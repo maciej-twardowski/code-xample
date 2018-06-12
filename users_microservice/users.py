@@ -10,10 +10,9 @@ class User(db.Model):
     __tablename__ = 'users_table'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True, nullable=False)
-    password_hash = db.Column(db.String(128), nullable=False)
+    password_hash = db.Column(db.String(128))
 
-    def __init__(self, username, password):
-        self.username = username
+    def hash_password(self, password):
         self.password_hash = pwd_context.encrypt(password)
 
     def verify_password(self, password):
@@ -43,7 +42,8 @@ def new_user():
     if User.query.filter_by(username=username).first() is not None:
         return Conflict('User already exists.')
 
-    user = User(username=username, password=password)
+    user = User(username=username)
+    user.hash_password(password)
     db.session.add(user)
     try:
         db.session.commit()
@@ -90,14 +90,17 @@ def init_db():
     if not os.path.exists('users_db.sqlite'):
         db.create_all()
 
-    if User.query.count() == 0:
-        initial_users = [
-            User(username='admin', password='admin'),
-            User(username='test', password='test')
-        ]
+    # if User.query.count() == 0:
+        admin = User(username='admin')
+        admin.hash_password('admin')
 
-        for u in initial_users:
-            db.session.add(u)
+        test = User(username='test')
+        test.hash_password('test')
+
+        guest = User(username='guest')
+        guest.hash_password('guest')
+
+        db.session.add_all([admin, test, guest])
 
         try:
             db.session.commit()

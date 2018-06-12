@@ -11,8 +11,7 @@ def get_all_technologies():
     if response.status_code == HTTPStatus.OK:
         return response.json()
     else:
-        # todo tests
-        raise response
+        raise Exception(response.content)
 
 
 def get_all_difficulties():
@@ -20,8 +19,7 @@ def get_all_difficulties():
     if response.status_code == HTTPStatus.OK:
         return response.json()
     else:
-        # todo tests
-        raise response
+        raise Exception(response.content)
 
 
 def get_post(post_id):
@@ -29,8 +27,7 @@ def get_post(post_id):
     if response.status_code == HTTPStatus.OK:
         return response.json()
     else:
-        # todo tests
-        raise response
+        raise Exception(response.content)
 
 
 def get_filtered_posts(tech, diff):
@@ -39,8 +36,7 @@ def get_filtered_posts(tech, diff):
     if response.status_code == HTTPStatus.OK:
         return response.json()
     else:
-        # todo tests
-        raise response
+        raise Exception(response.content)
 
 
 def create_post(author_name, title, body, link, technology, difficulty):
@@ -60,7 +56,4 @@ def create_post(author_name, title, body, link, technology, difficulty):
     if response.status_code == HTTPStatus.CREATED.value:
         return response.json()
     else:
-        # todo
-        raise Exception(
-            'Posts microservice returned status coded diff than 201 on post creation.'
-        )
+        raise Exception(response.content)
