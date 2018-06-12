@@ -17,6 +17,7 @@ def validate_urls():
 def validate_url(ch, method, properties, body):
     message = json.loads(body)
     valid = True
+    print(f'Got new URL to check: {message["url"]}.')
 
     try:
         urllib.request.urlopen('https://github.com/' + message["url"])
@@ -24,12 +25,14 @@ def validate_url(ch, method, properties, body):
         if e.code != 200:
             valid = False
 
+    print(f'Checking done. Link accessible: {valid}.')
     request = urllib.request.Request('http://localhost:5002/post/' + str(message["id"]) + '/update',
                                      json.dumps({'link_accessible': valid}).encode('utf8'), method='POST',
                                      headers={'content-type': 'application/json'})
 
     urllib.request.urlopen(request)
-
+    print(f'Post status updated.')
 
 if __name__ == '__main__':
+    print("Validator worker started. Waiting for tasks to do...")
     validate_urls()

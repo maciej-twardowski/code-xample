@@ -16,6 +16,7 @@ To run the application in dev mode: cd to cloned project directory, inside virtu
 FLASK_APP=users FLASK_ENV=development flask run --port 5001
 (cd to posts_microservice)
 FLASK_APP=posts FLASK_ENV=development flask run --port 5002
+python url_validator.py
 (cd root project directory)
 FLASK_APP=xample FLASK_ENV=development flask run
 ```
