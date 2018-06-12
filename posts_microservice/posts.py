@@ -34,6 +34,7 @@ def api_info():
             'GET  | /difficulty/id | ---',
             'POST | /post  | author_id, title, body, link, technology, difficulty',
             'POST | /post/id/like | ---',
+            'POST | /post/id/update | link_accessible',
         ]
     )
 

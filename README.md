@@ -46,6 +46,7 @@ You can access the application at http://localhost:5000 .
 | GET | /difficulty/id | - | difficulty information |
 | POST | /post | author_id, title, body, link, technology, difficulty | create new post |
 | POST | /post/id/like | - | like existing post |
+| POST | /post/id/update | link_accessible | set project accessibility
 
 ## Todo
 
