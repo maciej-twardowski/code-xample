@@ -1,35 +1,59 @@
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for
 )
-from werkzeug.exceptions import abort
-from flask_wtf import FlaskForm
-from wtforms import SelectField, SubmitField
-from wtforms.validators import DataRequired, Optional
-from xample.forms import LinksToDisplayForm
+from xample.forms import LinksToDisplayForm, PostForm
 from flask_login import login_required
-from xample.models import Technology, Difficulty, Post
+from xample.posts_api_handling import get_all_technologies, get_all_difficulties,\
+    get_filtered_posts, get_post, create_post
+from werkzeug.exceptions import NotFound
 
 bp = Blueprint('posts', __name__)
 
 
+def get_tech_and_diff_options():
+    technologies = get_all_technologies()
+    tech_options = [(tech.get('id'), tech.get('name')) for tech in technologies]
+    difficulties = get_all_difficulties()
+    diff_options = [(diff.get('id'), diff.get('name')) for diff in difficulties]
+    return tech_options, diff_options
+
+
 @bp.route('/')
 def index():
-    technologies = Technology.query.all()
-    tech_options = [(tech.id, tech.name) for tech in technologies]
-    difficulties = Difficulty.query.all()
-    diff_options = [(diff.id, diff.name) for diff in difficulties]
-
+    tech_options, diff_options = get_tech_and_diff_options()
     form = LinksToDisplayForm(csrf_enabled=False)
-    form.tech.choices = [('', '')] + tech_options
-    form.diff.choices = [('', '')] + diff_options
+    form.set_tech_options([('', '')] + tech_options)
+    form.set_diff_options([('', '')] + diff_options)
+    return render_template('posts/index.html', form=form)
 
-    return render_template('posts/index.html', form=form)  #
 
-
-@bp.route('/add_link', methods=['POST'])
+@bp.route('/add_link', methods=['GET', 'POST'])
 @login_required
 def add_link():
-    return 'TODO'
+    form = PostForm(csrf_enabled=False)
+    tech_options, diff_options = get_tech_and_diff_options()
+    # todo ^ make it a method
+    form.set_tech_options(tech_options)
+    form.set_diff_options(diff_options)
+
+    # if form.validate_on_submit():
+    # todo validation
+    if request.method == 'POST':
+        result = create_post(
+            form.author_name.data,
+            form.title.data,
+            form.body.data,
+            form.link.data,
+            form.tech.data,
+            form.diff.data,
+        )
+
+        created_post_id = result.get('id')
+        return redirect(url_for('posts.display_post', post_id=created_post_id))
+
+    # form.tech.choices = tech_options
+    # form.diff.choices = diff_options
+    return render_template('posts/add_link.html', form=form)
 
 
 def alchemy_object_to_dict(obj):
@@ -40,24 +64,17 @@ def alchemy_object_to_dict(obj):
 def display_posts():
     tech = request.args.get('tech')
     diff = request.args.get('diff')
-
-    filtered_posts = (
-        Post.query
-            .filter((Post.technology == tech) | (tech == ''))
-            .filter((Post.difficulty == diff) | (diff == ''))
-            .all()
-    )
-    post_dicts = [alchemy_object_to_dict(post) for post in filtered_posts]
+    filtered_posts = get_filtered_posts(tech, diff)
+    # post_dicts = [alchemy_object_to_dict(post) for post in filtered_posts]
     # TODO send only necessary data, display in pretty form
-    return render_template('posts/display.html', post_dicts=post_dicts)
+    return render_template('posts/display.html', post_dicts=filtered_posts)
 
 
 @bp.route('/display/<int:post_id>')
 def display_post(post_id):
-    post = Post.query.get(post_id)
-
+    post = get_post(post_id)
     if post is None:
-        abort(404, "Post id {0} doesn't exist.".format(post_id))
+        return NotFound()
     # TODO display in pretty form
     # TODO allow users to like posts
-    return str(alchemy_object_to_dict(post))
+    return str(post)

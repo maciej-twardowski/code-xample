@@ -4,16 +4,15 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
 from flask_login import current_user, login_user, logout_user, UserMixin
-from werkzeug.exceptions import BadRequest
 from werkzeug.urls import url_parse
-
 from xample.forms import LoginForm, RegistrationForm
 from xample import login_manager
 from http import HTTPStatus
 
 
 class User(UserMixin):
-    USERS_URL = 'http://127.0.0.1:5001'  # should be part of the config
+    # todo make this part of the config
+    USERS_URL = 'http://127.0.0.1:5001'
 
     def __init__(self, username):
         self.username = username
@@ -26,7 +25,7 @@ class User(UserMixin):
 
     def is_registered(self):
         response = requests.get(f'{self.USERS_URL}/user/{self.username}')
-        return True if response.status_code == 200 else False
+        return True if response.status_code == HTTPStatus.OK.value else False
 
     def register(self, password):
         registration_data = {'username': self.username, 'password': password}
@@ -53,10 +52,10 @@ class User(UserMixin):
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 
-@login_manager.user_loader
-def load_user(username):
-    u = User(username)
-    return u if u.is_registered() else None
+# @login_manager.user_loader
+# def load_user(username):
+#     u = User(username)
+#     return u if u.is_registered() else None
     # try:
     #     return u if u.is_registered() else None
     # except requests.exceptions.ConnectionError:
@@ -99,18 +98,6 @@ def login():
             next_page = url_for('index')
         return redirect(next_page)
     return render_template('auth/login.html', title='Sign In', form=form)
-
-
-# @bp.before_app_request
-# def load_logged_in_user():
-# 	user_id = session.get('user_id')
-
-# 	if user_id is None:
-# 		g.user = None
-# 	else:
-# 		g.user = get_db().execute(
-# 			'SELECT * FROM user WHERE id = ?', (user_id,)
-# 		).fetchone()
 
 
 @bp.route('/logout')

@@ -11,6 +11,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yet another very secret key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users_db.sqlite'
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 db = SQLAlchemy(app)
 
@@ -44,8 +45,8 @@ def api_info():
 
 @app.route('/user', methods=['POST'])
 def new_user():
-    username = request.form['username']
-    password = request.form['password']
+    username = request.form.get('username')
+    password = request.form.get('password')
     if username is None or password is None:
         return BadRequest('Missing arguments. Required: <username>, <password>.')
 
@@ -54,7 +55,12 @@ def new_user():
 
     user = User(username=username, password=password)
     db.session.add(user)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except:
+        db.session.rollback()
+        raise
+
     return (
         jsonify(succeded=True, id=user.id, username=user.username),
         HTTPStatus.CREATED.value,
@@ -79,7 +85,7 @@ def get_users():
 
 @app.route('/user/<string:username>/verify', methods=['POST'])
 def verify(username):
-    password = request.form['password']
+    password = request.form.get('password')
     if password is None:
         return BadRequest('Missing password argument')
 

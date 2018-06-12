@@ -12,9 +12,15 @@ https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world
 
 To run the application in dev mode: cd to cloned project directory, inside virtual env install required python packages (pip install -r requirements.txt) and enter in the terminal:
 ```
+(cd to users_microservice)
+FLASK_APP=users FLASK_ENV=development flask run --port 5001
+(cd to posts_microservice)
+FLASK_APP=posts FLASK_ENV=development flask run --port 5002
+(cd root project directory)
 FLASK_APP=xample FLASK_ENV=development flask run
 ```
 
+ EVERYTHING BELOW NOT YET UPDATED
 Alternatively build and run the docker container. Inside the cloned project directory:
 ```
 docker build -t xample:latest .
