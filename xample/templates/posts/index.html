@@ -1,18 +1,20 @@
 {% extends 'base.html' %}
 
 {% block header %}
-	<h1>{% block title %}Links{% endblock %}</h1>
+    <span style="display: flex; align-items: center;">
+	<i class="icono-search color-brown mr-3 float-left"></i> <h3>{% block title %} Search links{% endblock %}</h3>
 	{% if current_user.is_authenticated%}
-		<a class="action" href="{{ url_for('posts.add_link') }}">New</a>
+		<a class="btn bg-orange color-white ml-5" href="{{ url_for('posts.add_link') }}">New</a>
 	{% endif %}
+    </span>
 {% endblock %}
 
 {% block content %}
 	<form method="GET" action="{{ url_for('posts.display_posts') }}">
-	    {{ form.tech.label }}
-	    {{ form.tech }}
-	    {{ form.diff.label }}
-	    {{ form.diff }}
-	    {{ form.submit }}
+	    {{ form.tech.label(class_='color-brown m-2') }}
+	    {{ form.tech(class_='m-2') }}
+	    {{ form.diff.label(class_='color-brown m-2') }}
+        {{ form.diff(class_='m-2') }}
+	    {{ form.submit(class_='btn bg-orange color-white m-2') }}
 	</form>
 {% endblock %}

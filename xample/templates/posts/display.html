@@ -1,20 +1,64 @@
 {% extends 'base.html' %}
 
 {% block header %}
-	<h1>{% block title %}Displaying Links{% endblock %}</h1>
-	{% if g.user %}
-		<a class="action" href="{{ url_for('blog.create') }}">New</a>
+    <span style="display: flex; align-items: center;">
+	<i class="icono-chain color-brown mr-3 float-left"></i> <h3>{% block title %} Displaying links{% endblock %}</h3>
+	{% if current_user.is_authenticated%}
+		<a class="btn bg-orange color-white ml-5" href="{{ url_for('posts.add_link') }}">New</a>
 	{% endif %}
+    </span>
 {% endblock %}
 
 {% block content %}
 	<article class="posts">
-		<ol>
-			{% for post in post_dicts %}
-				<li>
-					<a href="{{ url_for('posts.display_post', post_id=post['id']) }}">{{ post['title'] }} {{ post['likes'] }}</a>
-				</li>
-			{% endfor %}
-		</ol>
+        <table class="m-2" style="width:100%">
+            <tr class="color-orange">
+                <th>#</th>
+                <th>Project name</th>
+                <th>Author</th>
+                <th>Difficulty</th>
+                <th>Technology</th>
+            </tr>
+
+            {% for post in post_dicts %}
+            <tr>
+                <th><a href="{{ url_for('posts.display_post', post_id=post['id']) }}">{{ post['id'] }}</a></th>
+                <th>
+                    <a href="{{ url_for('posts.display_post', post_id=post['id']) }}">
+                        {% if post['link_accessible'] == True %}
+                            <span class="text-success"><i class="icono-check text-success"></i> {{ post['title'] }}</span>
+                        {% elif post['link_accessible'] == False %}
+                            <span class="text-danger"><i class="icono-cross text-danger"> </i>{{ post['title'] }} </span>
+                        {% else %}
+                            {{ post['title'] }}
+                        {% endif %}
+                    </a>
+                </th>
+                <th>{{ post['author_name'] }}</th>
+
+                <th>
+                    {% if post['difficulty'] == 1 %}
+                        <i class="icono-asterisk text-success"></i>
+                    {% elif post['difficulty'] == 2 %}
+                        <i class="icono-asterisk text-warning"></i>
+                        <i class="icono-asterisk text-warning"></i>
+                    {% elif post['difficulty'] == 3 %}
+                        <i class="icono-asterisk text-danger"></i>
+                        <i class="icono-asterisk text-danger"></i>
+                        <i class="icono-asterisk text-danger"></i>
+                    {% endif %}
+                </th>
+                <th>
+                    {% if post['technology'] == 1 %}
+                        Python
+                    {% elif post['technology'] == 2 %}
+                        C++
+                    {% elif post['technology'] == 3 %}
+                        Java
+                    {% endif %}
+                </th>
+            </tr>
+            {% endfor %}
+        </table>
 	</article>
 {% endblock %}

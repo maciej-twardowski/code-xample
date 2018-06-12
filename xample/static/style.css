@@ -5,7 +5,7 @@
 
 html {
   font-family: sans-serif;
-  background: #eee;
+  background: #282828;
   padding: 1rem;
 }
 
@@ -17,12 +17,12 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: serif;
-  color: #377ba8;
+  color: #351a05;
   margin: 1rem 0;
 }
 
 a {
-  color: #377ba8;
+  color: #351a05;
 }
 
 hr {
@@ -77,8 +77,8 @@ nav ul li a, nav ul li span, header .action {
 .flash {
   margin: 1em 0;
   padding: 1em;
-  background: #cae6f6;
-  border: 1px solid #377ba8;
+  background: #b8732a; /*#cae6f6;*/
+  border: 1px solid #351a05;/*#377ba8;*/
 }
 
 .post > header {
@@ -137,3 +137,29 @@ input[type=submit] {
   align-self: start;
   min-width: 10em;
 }
+
+.color-brown {
+  color: #351a05;
+}
+
+.color-orange {
+  color: #b8732a;
+}
+
+.color-white {
+  color: #fff;
+}
+
+.bg-brown {
+  background-color: #351a05;
+}
+
+.bg-orange {
+  background-color: #b8732a;
+}
+
+a:hover {
+  color: #351a05;
+  text-decoration: none;
+}
+

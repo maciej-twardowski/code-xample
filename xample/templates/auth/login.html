@@ -1,20 +1,25 @@
 {% extends "base.html" %}
 
+{% block header %}
+    <span style="display: flex; align-items: center;">
+	    <i class="icono-user color-brown mr-3 float-left"></i> <h3>{% block title %} Sign in{% endblock %}</h3>
+    </span>
+{% endblock %}
+
 {% block content %}
-	<h1>Sign In</h1>
 	<form action={{ url_for('auth.login')}} method="post">
 		{{ form.hidden_tag() }}
 		<p>
-			{{ form.username.label }}<br>
-			{{ form.username(size=32) }}
+			{{ form.username.label(class_='color-brown m-2') }}<br>
+			{{ form.username(class_='m-2', size=32) }}
 		</p>
 		<p>
-			{{ form.password.label }}<br>
-			{{ form.password(size=32) }}
+			{{ form.password.label(class_='color-brown m-2') }}<br>
+			{{ form.password(class_='m-2', size=32) }}
 			{% for error in form.password.errors %}
       	        <span>[{{ error }}]</span>
             {% endfor %}
 		</p>
-		<p>{{ form.submit() }}</p>
+		<p>{{ form.submit(class_='btn bg-orange color-white m-2') }}</p>
 	</form>
 {% endblock %}

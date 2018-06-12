@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+
+{% block header %}
+<span style="display: flex; align-items: center;">
+    <i class="icono-file color-brown mr-3 float-left"></i>
+    {% if post['link_accessible'] == True %}
+        <h3 class="text-success">
+    {% elif post['link_accessible'] == False %}
+        <h3 class="text-danger">
+    {% else %}
+        <h3>
+    {% endif %}
+        {% block title %} Project: {{ post['title'] }}{% endblock %}</h3>
+</span>
+{% endblock %}
+
+
+{% block content %}
+	<article class="m-2">
+        <table class="m-2" style="display: flex;">
+            <tr style="align-items: center;" class="color-brown my-3">
+                <th>
+                    <i class="icono-calendar color-brown mr-3 float-left my-3"></i>
+                </th>
+                <th>
+                    <strong class="mr-1">Date: </strong> {{ post['created'] }}
+                </th>
+            </tr>
+            <tr style="align-items: center;" class="color-brown my-3">
+                <th>
+                    <i class="icono-user color-brown mr-3 float-left my-3"></i>
+
+                </th>
+                <th>
+                    <strong class="mr-1">Author: </strong> {{ post['author_name'] }}
+                </th>
+            </tr>
+            <tr style="align-items: center;" class="color-brown my-3">
+                <th>
+                    <i class="icono-document color-brown mr-3 float-left my-3"></i>
+                </th>
+                <th>
+                    <strong class="mr-1">Description: </strong> {{ post['body'] }}
+                </th>
+            </tr>
+            <tr style="align-items: center;" class="color-brown my-3">
+                <th>
+                    <i class="icono-share color-brown mr-3 float-left my-3"></i>
+                </th>
+                <th>
+                    <strong class="mr-1">URL: </strong> <a href="{{'https://github.com/' + post['link'] }}" target="_blank" class="color-orange">{{ post['link'] }}</a>
+                </th>
+            </tr>
+            <tr style="align-items: center;" class="color-brown my-3">
+                <th>
+                    <i class="icono-gear color-brown mr-3 float-left my-3"></i>
+                </th>
+                <th>
+                    <strong class="mr-1">Technology: </strong>
+                    {% if post['technology'] == 1 %}
+                        Python
+                    {% elif post['technology'] == 2 %}
+                        C++
+                    {% elif post['technology'] == 3 %}
+                        Java
+                    {% endif %}
+                </th>
+            </tr>
+            <tr style="align-items: center;" class="color-brown my-3">
+                <th>
+                    <i class="icono-bookmark color-brown mr-3 float-left my-3"></i>
+
+                </th>
+                <th>
+                    <strong class="mr-1">Difficulty: </strong>
+                    {% if post['difficulty'] == 1 %}
+                        <i class="icono-asterisk text-success"></i>
+                        <span class="text-success">(easy)</span>
+                    {% elif post['difficulty'] == 2 %}
+                        <i class="icono-asterisk text-warning"></i>
+                        <i class="icono-asterisk text-warning"></i>
+                        <span class="text-warning">(medium)</span>
+                    {% elif post['difficulty'] == 3 %}
+                        <i class="icono-asterisk text-danger"></i>
+                        <i class="icono-asterisk text-danger"></i>
+                        <i class="icono-asterisk text-danger"></i>
+                        <span class="text-danger">(hard)</span>
+                    {% endif %}
+                </th>
+            </tr>
+        </table>
+	</article>
+{% endblock %}
