@@ -1,23 +1,13 @@
-#!flask/bin/python
-# Based on https://blog.miguelgrinberg.com/post/restful-authentication-with-flask
 import os
-from flask import Flask, request, jsonify, url_for
-from flask_sqlalchemy import SQLAlchemy
+from flask import request, jsonify, url_for
 from passlib.apps import custom_app_context as pwd_context
 from http import HTTPStatus
 from werkzeug.exceptions import BadRequest, NotFound, Conflict
-
-app = Flask(__name__)
-app.config['SECRET_KEY'] = 'yet another very secret key'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users_db.sqlite'
-app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-
-db = SQLAlchemy(app)
+from users_microservice import app, db
 
 
 class User(db.Model):
-    __tablename__ = 'users'
+    __tablename__ = 'users_table'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
@@ -114,8 +104,3 @@ def init_db():
         except:
             db.session.rollback()
             raise
-
-
-if __name__ == '__main__':
-    init_db()
-    app.run(port=5001, debug=True)

@@ -1,24 +1,17 @@
-# !flask/bin/python
 # Based on https://blog.miguelgrinberg.com/post/restful-authentication-with-flask
-import os
 from http import HTTPStatus
-
 from flask import request, jsonify, url_for
 from posts_microservice import app, db
-from posts_microservice.models import Technology, Difficulty, Post
+from posts_microservice.models import Technology, Difficulty, Post, alchemy_object_to_dict
 from werkzeug.exceptions import BadRequest, NotFound
-
-
-def alchemy_object_to_dict(obj):
-    return dict((col, getattr(obj, col)) for col in obj.__table__.columns.keys())
 
 
 @app.route('/', methods=['GET'])
 def api_info():
     return jsonify(
         api_requests=[
-            '(method | route | arguments)',
-            'GET  | /posts | technology, difficulty',
+            '(method | route | arguments (O - optional)',
+            'GET  | /posts | technology(O), difficulty(O)',
             'GET  | /post/id | ---',
             'GET  | /technologies | ---',
             'GET  | /technology/id | ---',
@@ -46,7 +39,6 @@ def get_posts():
             .filter((Post.difficulty == diff_id) | (diff_id == '') | (diff_id is None))
             .all()
     )
-    # filtered_posts = Post.query.all()
     post_dicts = [alchemy_object_to_dict(post) for post in filtered_posts]
     return jsonify(post_dicts)
 

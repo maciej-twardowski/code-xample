@@ -45,6 +45,10 @@ class Post(db.Model):
         return '<Post "{}", author_name {}">'.format(self.title, self.author_name)
 
 
+def alchemy_object_to_dict(obj):
+    return dict((col, getattr(obj, col)) for col in obj.__table__.columns.keys())
+
+
 def init_db():
     if not os.path.exists('posts_db.sqlite'):
         db.create_all()
