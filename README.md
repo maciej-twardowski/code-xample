@@ -12,13 +12,12 @@ https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world
 
 To run the application in dev mode: cd to cloned project directory, inside virtual env install required python packages (pip install -r requirements.txt) and enter in the terminal:
 ```
+(cd to users_microservice)
+FLASK_APP=users FLASK_ENV=development flask run --port 5001
+(cd to posts_microservice)
+FLASK_APP=posts FLASK_ENV=development flask run --port 5002
+(cd root project directory)
 FLASK_APP=xample FLASK_ENV=development flask run
-```
-
-Alternatively build and run the docker container. Inside the cloned project directory:
-```
-docker build -t xample:latest .
-docker run --name xample -d -p 5000:5000 --rm xample:latest
 ```
 
 You can access the application at http://localhost:5000 .
@@ -29,9 +28,9 @@ You can access the application at http://localhost:5000 .
 | :---: | :---: | :---: | :---: |
 | GET | / | - | API information |
 | GET | /users | - | users information |
-| GET | /user/id | - | user information |
+| GET | /user/username | - | user information |
 | POST | /user | username, password | create new user |
-| POST | /auth/login | username, password | verify login and password |
+| POST | /user/<username>/verify | password | verify if password is valid |
 
 ## Posts Microservice API ( http://localhost:5002 )
 

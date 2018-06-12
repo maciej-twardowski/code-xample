@@ -1,3 +1,5 @@
+passlib
+requests
 alembic==0.9.9
 blinker==1.4
 click==6.7
