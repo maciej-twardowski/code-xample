@@ -1,18 +1,24 @@
 {% extends 'base.html' %}
 
+{% block header %}
+    <span style="display: flex; align-items: center;">
+	    <i class="icono-plus color-brown mr-3 float-left"></i> <h3>{% block title %} Add link{% endblock %}</h3>
+    </span>
+{% endblock %}
+
 {% block content %}
 	<form method="POST" action="{{ url_for('posts.add_link') }}">
         {{ form.author_name(value=current_user.username)}}
-	    {{ form.title.label }}
-	    {{ form.title }}
-	    {{ form.body.label }}
-	    {{ form.body }}
-	    {{ form.link.label }}
-	    {{ form.link }}
-	    {{ form.tech.label }}
-	    {{ form.tech }}
-	    {{ form.diff.label }}
-	    {{ form.diff }}
-	    {{ form.submit }}
+	    {{ form.title.label(class_='color-brown m-2') }}
+	    {{ form.title(class_='m-2') }}
+	    {{ form.body.label(class_='color-brown m-2') }}
+	    {{ form.body(class_='m-2') }}
+	    {{ form.link.label(class_='color-brown m-2') }}
+	    {{ form.link(class_='m-2') }}
+	    {{ form.tech.label(class_='color-brown m-2') }}
+	    {{ form.tech(class_='m-2') }}
+	    {{ form.diff.label(class_='color-brown m-2') }}
+	    {{ form.diff(class_='m-2') }}
+	    {{ form.submit(class_='btn bg-orange color-white m-2') }}
 	</form>
 {% endblock %}
