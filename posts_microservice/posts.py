@@ -1,6 +1,9 @@
 #!flask/bin/python
 # Based on https://blog.miguelgrinberg.com/post/restful-authentication-with-flask
+import json
 import os
+
+import pika
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
@@ -12,6 +15,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yet another very secret key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///posts_db.sqlite'
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
+
 
 def alchemy_object_to_dict(obj):
     return dict((col, getattr(obj, col)) for col in obj.__table__.columns.keys())
@@ -94,6 +98,16 @@ def get_difficulty(id):
     return jsonify(alchemy_object_to_dict(difficulty))
 
 
+def send_to_validation_queue(message):
+    connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+    channel = connection.channel()
+    channel.queue_declare(queue='urlValidationQueue')
+
+    channel.basic_publish(exchange='',
+                          routing_key='urlValidationQueue',
+                          body=message)
+
+
 @app.route('/post', methods=['POST'])
 def new_post():
     author_id = request.json.get('author_id')
@@ -122,11 +136,24 @@ def new_post():
 
     db.session.add(post)
     db.session.commit()
-    try:
-        db.session.commit()
-    except:
-        db.session.rollback()
-        raise
+    send_to_validation_queue(json.dumps({"url": link, "id": post.id}))
+
+    return jsonify(alchemy_object_to_dict(post))
+
+
+@app.route('/post/<int:id>/update', methods=['POST'])
+def update_post_accessibility(id):
+    link_accessible = request.json.get('link_accessible')
+
+    if not Post.query.get(id):
+        return jsonify(succeded=False, error='Post not found.')
+
+    if link_accessible is None:
+        return jsonify(succeded=False, error='Missing parameters'), 400
+
+    post = Post.query.get(id)
+    post.link_accessible = link_accessible
+    db.session.commit()
 
     return jsonify(alchemy_object_to_dict(post))
 
