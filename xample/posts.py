@@ -77,4 +77,4 @@ def display_post(post_id):
         return NotFound()
     # TODO display in pretty form
     # TODO allow users to like posts
-    return str(post)
+    return render_template('posts/display_post.html', post=post)
