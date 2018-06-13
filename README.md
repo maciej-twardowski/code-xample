@@ -41,3 +41,7 @@ You can access the application at http://0.0.0.0:5000 .
 | POST | /post | author_id, title, body, link, technology, difficulty | create new post |
 | POST | /post/id/like | - | like existing post |
 | POST | /post/id/update | link_accessible | set project accessibility
+
+## Authors
+
+Marcin Brzeziński oraz Maciej Twardowski
