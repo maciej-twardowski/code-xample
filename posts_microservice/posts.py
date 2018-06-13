@@ -54,6 +54,7 @@ def get_post(post_id):
     if not post:
         return NotFound()
 
+    send_to_validation_queue(json.dumps({'id': post.id, 'url': post.link}))
     return jsonify(alchemy_object_to_dict(post))
 
 
@@ -126,7 +127,7 @@ def new_post():
         db.session.rollback()
         raise
 
-    send_to_validation_queue(json.dumps({'id': post.id, 'url': link}))
+    send_to_validation_queue(json.dumps({'id': post.id, 'url': post.link}))
     return (
         jsonify(alchemy_object_to_dict(post)),
         HTTPStatus.CREATED.value,
