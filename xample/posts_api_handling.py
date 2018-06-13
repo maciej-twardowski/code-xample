@@ -3,7 +3,7 @@ from http import HTTPStatus
 import requests
 
 # todo make part of the config
-POSTS_URL = 'http://127.0.0.1:5002'
+POSTS_URL = 'http://posts1:5002'
 
 
 def get_all_technologies():

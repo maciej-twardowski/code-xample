@@ -126,7 +126,7 @@ def new_post():
         db.session.rollback()
         raise
 
-    send_to_validation_queue(json.dumps({'id': post.id, 'url': link}))
+    # send_to_validation_queue(json.dumps({'id': post.id, 'url': link}))
     return (
         jsonify(alchemy_object_to_dict(post)),
         HTTPStatus.CREATED.value,
@@ -167,9 +167,3 @@ def new_like(post_id):
 
     return jsonify(alchemy_object_to_dict(post))
 
-
-# if __name__ == '__main__':
-#     with app.app_context():
-#         db.init_app(app)
-#         init_db()
-#         app.run(port=5002, debug=True)

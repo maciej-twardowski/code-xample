@@ -1,11 +1,33 @@
 version: '3'
 
+networks:
+  internal:
+
 services:
+  web:
+    build: './xample'
+    ports:
+     - "5000:5000"
+    depends_on:
+      - users
+      - posts
+    networks:
+      internal:
+
   users:
     build: './users_microservice'
     ports:
      - "5001:5001"
+    networks:
+      internal:
+        aliases:
+          - users1
+
   posts:
     build: './posts_microservice'
     ports:
      - "5002:5002"
+    networks:
+      internal:
+        aliases:
+          - posts1

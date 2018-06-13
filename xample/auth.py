@@ -10,7 +10,7 @@ from http import HTTPStatus
 
 class User(UserMixin):
     # todo make this part of the config
-    USERS_URL = 'http://127.0.0.1:5001'
+    USERS_URL = 'http://users1:5001'
 
     def __init__(self, username):
         self.username = username

@@ -1,8 +1,8 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
+    Blueprint, flash, redirect, render_template, request, url_for
 )
 from xample.forms import LinksToDisplayForm, PostForm
-from flask_login import login_required
+from flask_login import login_required, current_user
 from xample.posts_api_handling import get_all_technologies, get_all_difficulties,\
     get_filtered_posts, get_post, create_post
 from werkzeug.exceptions import NotFound
@@ -30,16 +30,16 @@ def index():
 @bp.route('/add_link', methods=['GET', 'POST'])
 @login_required
 def add_link():
-    form = PostForm(csrf_enabled=False)
+    form = PostForm()
     tech_options, diff_options = get_tech_and_diff_options()
     form.set_tech_options(tech_options)
     form.set_diff_options(diff_options)
 
-    # if form.validate_on_submit():
     # todo validation
+    # if form.validate_on_submit():
     if request.method == 'POST':
         result = create_post(
-            form.author_name.data,
+            current_user.username,
             form.title.data,
             form.body.data,
             form.link.data,
@@ -50,8 +50,6 @@ def add_link():
         created_post_id = result.get('id')
         return redirect(url_for('posts.display_post', post_id=created_post_id))
 
-    # form.tech.choices = tech_options
-    # form.diff.choices = diff_options
     return render_template('posts/add_link.html', form=form)
 
 
@@ -64,8 +62,6 @@ def display_posts():
     tech = request.args.get('tech')
     diff = request.args.get('diff')
     filtered_posts = get_filtered_posts(tech, diff)
-    # post_dicts = [alchemy_object_to_dict(post) for post in filtered_posts]
-    # TODO send only necessary data, display in pretty form
     return render_template('posts/display.html', post_dicts=filtered_posts)
 
 
@@ -74,6 +70,5 @@ def display_post(post_id):
     post = get_post(post_id)
     if post is None:
         return NotFound()
-    # TODO display in pretty form
     # TODO allow users to like posts
     return render_template('posts/display_post.html', post=post)

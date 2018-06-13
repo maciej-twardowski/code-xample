@@ -1,14 +1,14 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField,\
     SubmitField, SelectField, HiddenField
-from wtforms.validators import DataRequired, ValidationError, EqualTo, InputRequired
+from wtforms.validators import DataRequired, Length
 
 
 # todo ~~~~~~~~~ Validation ~~~~~~~~~~
 
 
 class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
+    username = StringField('Username', validators=[Length(min=4)])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Sign In')
 
@@ -26,23 +26,17 @@ class LinksToDisplayForm(FlaskForm):
 
 
 class RegistrationForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
+    username = StringField('Username', validators=[Length(min=4)])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Register')
 
-    # def validate_username(self, username):
-    #     user = User.query.filter_by(username=username.data).first()
-    #     if user is not None:
-    #         raise ValidationError('Please use a different username.')
-
 
 class PostForm(FlaskForm):
-    author_name = HiddenField(validators=[])
-    title = StringField('Title', validators=[InputRequired('Title required')])
+    title = StringField('Title', validators=[Length(min=4)])
     body = StringField('Body', validators=[])
-    link = StringField('Link', validators=[])
-    tech = SelectField('Technology') #validators=[], coerce=str
-    diff = SelectField('Difficulty') #, validators=[], coerce=str
+    link = StringField('Link', validators=[Length(min=3)])
+    tech = SelectField('Technology')
+    diff = SelectField('Difficulty')
     submit = SubmitField('Add')
 
     def set_tech_options(self, tech_options):

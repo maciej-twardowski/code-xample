@@ -8,7 +8,7 @@
 
 {% block content %}
 	<form method="POST" action="{{ url_for('posts.add_link') }}">
-        {{ form.author_name(value=current_user.username)}}
+        {{ form.hidden_tag() }}
 	    {{ form.title.label(class_='color-brown m-2') }}
 	    {{ form.title(class_='m-2') }}
 	    {{ form.body.label(class_='color-brown m-2') }}
