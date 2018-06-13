@@ -10,18 +10,14 @@ https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world
 ```
 ## Running the app
 
-To run the application in dev mode: cd to cloned project directory, inside virtual env install required python packages (pip install -r requirements.txt) and enter in the terminal:
+To run the application, cd to project root and type:
 ```
-(cd to users_microservice)
-FLASK_APP=users FLASK_ENV=development flask run --port 5001
-(cd to posts_microservice)
-FLASK_APP=posts FLASK_ENV=development flask run --port 5002
-python url_validator.py
-(cd root project directory)
-FLASK_APP=xample FLASK_ENV=development flask run
+docker compose up
 ```
 
-You can access the application at http://localhost:5000 .
+You can access the application at http://0.0.0.0:5000 .
+Users microservice is available at http://0.0.0.0:5001
+Posts microservice is available at http://0.0.0.0:5002
 
 ## Users Microservice API ( http://localhost:5001 )
 
@@ -47,11 +43,3 @@ You can access the application at http://localhost:5000 .
 | POST | /post | author_id, title, body, link, technology, difficulty | create new post |
 | POST | /post/id/like | - | like existing post |
 | POST | /post/id/update | link_accessible | set project accessibility
-
-## Todo
-
-* Split into microservices
-* Posts microservice: Add list of users ids who liked the post to prevent from like abuse, think about better URL validation
-* Add features: adding links, validating links, 'liking', asynchronously parsing information from the links destinations 
-* Add minimalistic CSS
-* Dockerize
