@@ -1,5 +1,4 @@
 import json
-
 import pika
 import urllib.request
 

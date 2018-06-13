@@ -32,7 +32,6 @@ def index():
 def add_link():
     form = PostForm(csrf_enabled=False)
     tech_options, diff_options = get_tech_and_diff_options()
-    # todo ^ make it a method
     form.set_tech_options(tech_options)
     form.set_diff_options(diff_options)
 

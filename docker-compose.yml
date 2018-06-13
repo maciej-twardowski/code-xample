@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  users:
+    build: './users_microservice'
+    ports:
+     - "5001:5001"
+  posts:
+    build: './posts_microservice'
+    ports:
+     - "5002:5002"

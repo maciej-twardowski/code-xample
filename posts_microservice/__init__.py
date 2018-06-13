@@ -8,9 +8,9 @@ app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 db = SQLAlchemy(app)
-db.init_app(app)
 
 from posts_microservice import models, posts
 
+db.init_app(app)
 models.init_db()
 
