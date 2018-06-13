@@ -16,10 +16,8 @@ docker compose up
 ```
 
 You can access the application at http://0.0.0.0:5000 .
-Users microservice is available at http://0.0.0.0:5001
-Posts microservice is available at http://0.0.0.0:5002
 
-## Users Microservice API ( http://localhost:5001 )
+## Users Microservice API ( http://0.0.0.0:5001 )
 
 | Method  | Route | Arguments | Description |
 | :---: | :---: | :---: | :---: |
@@ -29,7 +27,7 @@ Posts microservice is available at http://0.0.0.0:5002
 | POST | /user | username, password | create new user |
 | POST | /user/<username>/verify | password | verify if password is valid |
 
-## Posts Microservice API ( http://localhost:5002 )
+## Posts Microservice API ( http://0.0.0.0:5002 )
 
 | Method  | Route | Arguments | Description |
 | :---: | :---: | :---: | :---: |
