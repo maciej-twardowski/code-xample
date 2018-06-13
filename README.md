@@ -44,4 +44,4 @@ You can access the application at http://0.0.0.0:5000 .
 
 ## Authors
 
-Marcin Brzeziński oraz Maciej Twardowski
+Marcin Brzeziński & Maciej Twardowski
