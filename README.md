@@ -2,17 +2,23 @@
 
 ## Learning new technologies by examples
 
-Web application aggregating links to high quality code at GitHub, categorized by programming language and subjective difficulty of the code. It allows users to view, post, describe and 'like' such links. Final project for Distributed Web Applications course at University of Warsaw.
+Web application aggregating links to high quality code at GitHub, categorized by programming language and subjective difficulty of the code. It allows users to view, post and describe such links. Final project for Distributed Web Applications course at University of Warsaw.
 
 Flask application based on this comprehensive tutorial:
 ```
 https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world
 ```
+## Screenshots
+
+![alt text](https://i.imgur.com/FZxfeZj.png)
+![alt text](https://i.imgur.com/wGvYfns.png)
+![alt text](https://i.imgur.com/wPXwDx9.png)
+
 ## Running the app
 
-To run the application, cd to project root and type:
+To run the application using docker compose, cd to project root and type:
 ```
-docker compose up
+docker-compose up
 ```
 
 You can access the application at http://0.0.0.0:5000 .
@@ -25,7 +31,7 @@ You can access the application at http://0.0.0.0:5000 .
 | GET | /users | - | users information |
 | GET | /user/username | - | user information |
 | POST | /user | username, password | create new user |
-| POST | /user/<username>/verify | password | verify if password is valid |
+| POST | /user/username/verify | password | verify if password is valid |
 
 ## Posts Microservice API ( http://0.0.0.0:5002 )
 
